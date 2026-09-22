@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ética y Aspectos Sociales de la IA — Actividad Interactiva</title>
+<style>
+/* ========== RESET Y BASE ========== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:#0a0e27;
+  color:#1a1a2e;
+  overflow:hidden;
+  height:100vh;
+  width:100vw;
+}
+.deck{position:relative;width:100%;height:100vh;overflow:hidden}
+.slide{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:flex-start;
+  padding:20px 30px 100px 30px;
+  overflow-y:auto;
+  background:linear-gradient(135deg,#f5f7fa 0%,#e8ecf1 50%,#dfe6ed 100%);
+  color:#1a1a2e;
+}
+.slide.active{display:flex;animation:fadeIn .5s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ========== ICONOS FLOTANTES DE FONDO ========== */
+.floating-bg{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;overflow:hidden;
+}
+.floating-bg span{
+  position:absolute;
+  font-size:2rem;
+  opacity:.12;
+  animation:floatUp linear infinite;
+  filter:blur(.5px);
+}
+@keyframes floatUp{
+  0%{transform:translateY(110vh) rotate(0deg);opacity:0}
+  10%{opacity:.15}
+  90%{opacity:.15}
+  100%{transform:translateY(-10vh) rotate(360deg);opacity:0}
+}
+
+/* ========== PORTADA ========== */
+.cover{
+  background:linear-gradient(135deg,#0a0e27 0%,#1a1f4e 40%,#2d1b69 70%,#0a0e27 100%);
+  color:#fff;
+  justify-content:center;
+  text-align:center;
+  position:relative;
+  overflow:hidden;
+}
+.cover::before{
+  content:'';
+  position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:radial-gradient(circle at 30% 40%,rgba(0,212,255,.15) 0%,transparent 50%),
+             radial-gradient(circle at 70% 60%,rgba(168,85,247,.15) 0%,transparent 50%),
+             radial-gradient(circle at 50% 80%,rgba(236,72,153,.1) 0%,transparent 50%);
+  animation:auroraShift 12s ease-in-out infinite alternate;
+}
+@keyframes auroraShift{
+  0%{transform:translate(0,0) scale(1)}
+  100%{transform:translate(-5%,-5%) scale(1.1)}
+}
+.cover-content{position:relative;z-index:2;max-width:1000px;padding:20px}
+.cover h1{
+  font-size:clamp(1.8rem,4vw,3.2rem);
+  font-weight:800;
+  line-height:1.2;
+  margin-bottom:15px;
+  background:linear-gradient(90deg,#00d4ff,#a855f7,#ec4899,#00d4ff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:gradientText 5s ease infinite;
+  text-shadow:0 0 40px rgba(0,212,255,.3);
+}
+@keyframes gradientText{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.cover h2{
+  font-size:clamp(1rem,2vw,1.5rem);
+  font-weight:400;
+  color:#a0c4ff;
+  margin-bottom:35px;
+  letter-spacing:2px;
+}
+.cover-info{
+  display:flex;flex-direction:column;gap:12px;
+  margin-bottom:30px;
+}
+.cover-info .info-item{
+  font-size:clamp(.9rem,1.5vw,1.15rem);
+  color:#e0e7ff;
+  padding:10px 25px;
+  border:1px solid rgba(0,212,255,.3);
+  border-radius:50px;
+  background:rgba(0,212,255,.05);
+  backdrop-filter:blur(5px);
+  display:inline-block;
+  margin:0 auto;
+  transition:all .3s;
+}
+.cover-info .info-item:hover{
+  border-color:#00d4ff;
+  box-shadow:0 0 20px rgba(0,212,255,.4);
+  transform:scale(1.05);
+}
+.cover-icon{
+  font-size:clamp(2.5rem,6vw,4rem);
+  margin-bottom:20px;
+  animation:pulseIcon 3s ease-in-out infinite;
+  display:inline-block;
+}
+@keyframes pulseIcon{
+  0%,100%{transform:scale(1);filter:drop-shadow(0 0 10px rgba(0,212,255,.5))}
+  50%{transform:scale(1.15);filter:drop-shadow(0 0 30px rgba(0,212,255,.9))}
+}
+.neural-net{
+  position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;opacity:.4;
+}
+.neural-net circle{fill:#00d4ff;animation:neuronPulse 2s ease-in-out infinite}
+.neural-net line{stroke:#a855f7;stroke-width:1;opacity:.3}
+@keyframes neuronPulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* ========== TÍTULOS Y CONTENIDO ========== */
+.slide h2.title{
+  font-size:clamp(1.4rem,3vw,2.2rem);
+  font-weight:800;
+  color:#1a1a2e;
+  margin-bottom:20px;
+  text-align:center;
+  position:relative;
+  padding-bottom:12px;
+}
+.slide h2.title::after{
+  content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);
+  width:80px;height:4px;
+  background:linear-gradient(90deg,#00d4ff,#a855f7);
+  border-radius:2px;
+}
+.slide h3.subtitle{
+  font-size:clamp(1rem,2vw,1.4rem);
+  font-weight:700;
+  color:#2d1b69;
+  margin:15px 0 10px;
+}
+.card{
+  background:#fff;
+  border-radius:16px;
+  padding:25px 30px;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+  max-width:1100px;
+  width:100%;
+  margin-bottom:15px;
+  border-left:6px solid #00d4ff;
+}
+.card.purple{border-left-color:#a855f7}
+.card.pink{border-left-color:#ec4899}
+.card.green{border-left-color:#10b981}
+.card.orange{border-left-color:#f59e0b}
+.card p,.card li{font-size:clamp(.85rem,1.3vw,1rem);line-height:1.7;color:#2d3748}
+.card ul{padding-left:25px;margin:10px 0}
+
+/* ========== SCOREBOARD ========== */
+.scoreboard{
+  position:fixed;top:0;left:0;width:100%;
+  display:flex;justify-content:center;gap:8px;
+  padding:8px 15px;
+  background:rgba(10,14,39,.95);
+  z-index:100;
+  flex-wrap:wrap;
+  box-shadow:0 2px 15px rgba(0,0,0,.3);
+}
+.scoreboard.hidden{display:none}
+.team-score{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;
+  border-radius:25px;
+  color:#fff;
+  font-weight:700;
+  font-size:clamp(.7rem,1.1vw,.9rem);
+  transition:all .3s;
+  border:2px solid transparent;
+}
+.team-score.updated{animation:scorePop .6s ease}
+@keyframes scorePop{0%{transform:scale(1)}50%{transform:scale(1.25);box-shadow:0 0 25px currentColor}100%{transform:scale(1)}}
+.team-score .pts{background:rgba(255,255,255,.25);padding:2px 10px;border-radius:15px;min-width:35px;text-align:center}
+
+/* ========== TEMPORIZADOR ========== */
+.timer-box{
+  display:flex;flex-direction:column;align-items:center;
+  margin:15px 0;
+}
+.timer{
+  font-size:clamp(2.5rem,6vw,5rem);
+  font-weight:900;
+  color:#1a1a2e;
+  font-family:'Courier New',monospace;
+  padding:10px 40px;
+  border-radius:20px;
+  background:#fff;
+  box-shadow:0 5px 25px rgba(0,0,0,.1);
+  transition:all .3s;
+  border:3px solid #e2e8f0;
+}
+.timer.warning{color:#f59e0b;border-color:#f59e0b;animation:pulseWarn .5s infinite}
+.timer.danger{color:#ef4444;border-color:#ef4444;animation:pulseDanger .3s infinite}
+.timer.finished{color:#10b981;border-color:#10b981;font-size:clamp(1.2rem,2.5vw,2rem)}
+@keyframes pulseWarn{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes pulseDanger{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.timer-label{font-size:.9rem;color:#64748b;margin-top:8px;font-weight:600;text-transform:uppercase;letter-spacing:2px}
+
+/* ========== BOTONES ========== */
+.btn{
+  padding:12px 28px;
+  border:none;border-radius:12px;
+  font-size:clamp(.85rem,1.2vw,1rem);
+  font-weight:700;cursor:pointer;
+  transition:all .3s;
+  margin:5px;
+  color:#fff;
+  box-shadow:0 4px 15px rgba(0,0,0,.15);
+}
+.btn:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.btn:active{transform:translateY(0)}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.btn-primary{background:linear-gradient(135deg,#00d4ff,#0891b2)}
+.btn-purple{background:linear-gradient(135deg,#a855f7,#7c3aed)}
+.btn-pink{background:linear-gradient(135deg,#ec4899,#db2777)}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669)}
+.btn-orange{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.btn-red{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.btn-dark{background:linear-gradient(135deg,#334155,#1e293b)}
+.btn-sm{padding:8px 16px;font-size:.8rem}
+
+/* ========== NAVEGACIÓN ========== */
+.nav-bar{
+  position:fixed;bottom:0;left:0;width:100%;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:12px 25px;
+  background:rgba(10,14,39,.95);
+  z-index:100;
+  box-shadow:0 -2px 15px rgba(0,0,0,.3);
+}
+.nav-bar.hidden{display:none}
+.slide-indicator{color:#94a3b8;font-size:.85rem;font-weight:600}
+.nav-btns{display:flex;gap:10px}
+
+/* ========== PREGUNTAS ========== */
+.question-num{
+  display:inline-block;
+  background:linear-gradient(135deg,#00d4ff,#a855f7);
+  color:#fff;
+  padding:5px 18px;
+  border-radius:25px;
+  font-weight:800;
+  font-size:.85rem;
+  margin-bottom:12px;
+  letter-spacing:1px;
+}
+.question-text{
+  font-size:clamp(1rem,1.8vw,1.35rem);
+  font-weight:600;
+  color:#1a1a2e;
+  line-height:1.6;
+  margin-bottom:20px;
+}
+
+/* ========== OPCIONES ========== */
+.options-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:15px 0}
+.option-btn{
+  padding:14px 20px;
+  border:2px solid #e2e8f0;
+  border-radius:12px;
+  background:#fff;
+  text-align:left;
+  font-size:clamp(.85rem,1.2vw,1rem);
+  cursor:pointer;
+  transition:all .3s;
+  font-weight:500;
+}
+.option-btn:hover{border-color:#00d4ff;background:#f0f9ff}
+.option-btn.selected{border-color:#a855f7;background:#faf5ff;font-weight:700}
+.option-btn.correct{border-color:#10b981;background:#ecfdf5;font-weight:700;color:#065f46}
+.option-btn.incorrect{border-color:#ef4444;background:#fef2f2;color:#991b1b}
+
+/* ========== TEAM SELECTORS ========== */
+.team-selector{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 15px;border-radius:12px;
+  background:#f8fafc;margin:6px 0;
+  border:2px solid #e2e8f0;
+  transition:all .3s;
+}
+.team-selector.correct{background:#ecfdf5;border-color:#10b981}
+.team-selector.incorrect{background:#fef2f2;border-color:#ef4444}
+.team-selector label{font-weight:700;min-width:90px;font-size:.9rem}
+.team-selector select{
+  flex:1;padding:8px 12px;border-radius:8px;
+  border:2px solid #cbd5e1;font-size:.85rem;
+  background:#fff;cursor:pointer;font-weight:600;
+}
+
+/* ========== SCORE TABLE ========== */
+.score-table{
+  width:100%;max-width:900px;
+  border-collapse:collapse;
+  margin:20px 0;
+  background:#fff;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 8px 30px rgba(0,0,0,.1);
+}
+.score-table th{
+  background:linear-gradient(135deg,#1a1a2e,#2d1b69);
+  color:#fff;padding:14px 12px;
+  font-size:.85rem;text-transform:uppercase;letter-spacing:1px;
+}
+.score-table td{
+  padding:12px;text-align:center;
+  border-bottom:1px solid #e2e8f0;
+  font-weight:600;font-size:.9rem;
+}
+.score-table tr:last-child td{border-bottom:none}
+.score-table tr.total-row{background:#f0f9ff;font-weight:800;font-size:1rem}
+.score-table tr.total-row td{color:#1a1a2e;padding:16px 12px}
+
+/* ========== DEBATE ========== */
+.debate-phase{
+  display:flex;flex-direction:column;align-items:center;
+  padding:15px;background:#fff;border-radius:16px;
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
+  margin:10px 0;width:100%;max-width:900px;
+}
+.phase-badge{
+  padding:6px 20px;border-radius:25px;
+  font-weight:800;font-size:.8rem;letter-spacing:2px;
+  text-transform:uppercase;margin-bottom:10px;
+}
+.phase-apertura{background:#dbeafe;color:#1e40af}
+.phase-replica{background:#fce7f3;color:#9d174d}
+.phase-contra{background:#fef3c7;color:#92400e}
+.phase-solution{background:#d1fae5;color:#065f46}
+.solution-box{
+  background:linear-gradient(135deg,#ecfdf5,#d1fae5);
+  border:2px solid #10b981;
+  border-radius:16px;padding:25px;
+  text-align:center;margin:15px 0;
+  animation:solutionReveal .8s ease;
+}
+@keyframes solutionReveal{0%{opacity:0;transform:scale(.9)}100%{opacity:1;transform:scale(1)}}
+.solution-box h4{color:#065f46;font-size:.9rem;letter-spacing:2px;margin-bottom:10px;text-transform:uppercase}
+.solution-box p{font-size:clamp(1rem,1.6vw,1.25rem);font-weight:600;color:#064e3b;line-height:1.6}
+
+/* ========== PRESENTACIÓN 1.6 ========== */
+.topic-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:15px;width:100%;max-width:1100px;
+}
+.topic-card{
+  background:#fff;border-radius:16px;padding:20px;
+  box-shadow:0 5px 20px rgba(0,0,0,.08);
+  border-top:5px solid #00d4ff;
+  transition:transform .3s;
+}
+.topic-card:hover{transform:translateY(-5px)}
+.topic-card.p2{border-top-color:#a855f7}
+.topic-card.p3{border-top-color:#ec4899}
+.topic-card.p4{border-top-color:#10b981}
+.topic-card.p5{border-top-color:#f59e0b}
+.topic-card .icon{font-size:2rem;margin-bottom:8px}
+.topic-card h4{font-size:1rem;color:#1a1a2e;margin-bottom:8px;font-weight:800}
+.topic-card p{font-size:.85rem;color:#4a5568;line-height:1.6}
+
+/* ========== RESPONSIVE ========== */
+@media(max-width:768px){
+  .slide{padding:15px 12px 90px 12px}
+  .scoreboard{gap:4px;padding:6px}
+  .team-score{padding:4px 8px;font-size:.65rem}
+  .card{padding:15px 18px}
+  .timer{padding:8px 25px}
+}
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#f1f5f9}
+::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:4px}
+</style>
+</head>
+<body>
+
+<!-- ============ FONDO FLOTANTE ============ -->
+<div class="floating-bg" id="floatingBg"></div>
+
+<!-- ============ SCOREBOARD ============ -->
+<div class="scoreboard hidden" id="scoreboard">
+  <div class="team-score" style="background:#e74c3c" id="ts0">🔴 Equipo 1 <span class="pts" id="pts0">0</span></div>
+  <div class="team-score" style="background:#3498db" id="ts1">🔵 Equipo 2 <span class="pts" id="pts1">0</span></div>
+  <div class="team-score" style="background:#27ae60" id="ts2">🟢 Equipo 3 <span class="pts" id="pts2">0</span></div>
+  <div class="team-score" style="background:#f39c12" id="ts3">🟠 Equipo 4 <span class="pts" id="pts3">0</span></div>
+  <div class="team-score" style="background:#9b59b6" id="ts4">🟣 Equipo 5 <span class="pts" id="pts4">0</span></div>
+</div>
+
+<!-- ============ DECK ============ -->
+<div class="deck" id="deck">
+
+<!-- ============ SLIDE 0: PORTADA ============ -->
+<section class="slide active cover" id="slide-0">
+  <svg class="neural-net" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+    <circle cx="150" cy="120" r="6"/><circle cx="350" cy="80" r="5"/>
+    <circle cx="600" cy="150" r="7"/><circle cx="850" cy="90" r="5"/>
+    <circle cx="1050" cy="180" r="6"/><circle cx="200" cy="400" r="7"/>
+    <circle cx="500" cy="350" r="5"/><circle cx="750" cy="420" r="6"/>
+    <circle cx="1000" cy="380" r="5"/><circle cx="300" cy="650" r="6"/>
+    <circle cx="650" cy="680" r="5"/><circle cx="950" cy="620" r="7"/>
+    <line x1="150" y1="120" x2="350" y2="80"/><line x1="350" y1="80" x2="600" y2="150"/>
+    <line x1="600" y1="150" x2="850" y2="90"/><line x1="850" y1="90" x2="1050" y2="180"/>
+    <line x1="200" y1="400" x2="500" y2="350"/><line x1="500" y1="350" x2="750" y2="420"/>
+    <line x1="750" y1="420" x2="1000" y2="380"/><line x1="150" y1="120" x2="200" y2="400"/>
+    <line x1="600" y1="150" x2="500" y2="350"/><line x1="1050" y1="180" x2="1000" y2="380"/>
+    <line x1="300" y1="650" x2="650" y2="680"/><line x1="650" y1="680" x2="950" y2="620"/>
+    <line x1="200" y1="400" x2="300" y2="650"/><line x1="750" y1="420" x2="950" y2="620"/>
+  </svg>
+  <div class="cover-content">
+    <div class="cover-icon">🧠⚖️🤖</div>
+    <h1>ÉTICA Y ASPECTOS SOCIALES DE LA INTELIGENCIA ARTIFICIAL</h1>
+    <h2>Aristóteles · UNESCO · Uso Responsable en Ingeniería de TI</h2>
+    <div class="cover-info">
+      <span class="info-item">👨‍🏫 Docente: <strong>Prof. Javier García Lara</strong></span>
+      <span class="info-item">🎓 Licenciatura en Ingeniería en Tecnologías de la Información e Innovación Digital</span>
+      <span class="info-item">📅 <span id="currentDate"></span></span>
+      <span class="info-item">🏆 Actividad interactiva — 120 puntos</span>
+    </div>
+    <button class="btn btn-primary" style="font-size:1.1rem;padding:16px 40px" onclick="goToSlide(1)">▶ Comenzar Actividad</button>
+  </div>
+</section>
+
+<!-- ============ SLIDE 1: TEMA 1.6 ============ -->
+<section class="slide" id="slide-1">
+  <h2 class="title">📘 Tema 1.6 — Ética y Aspectos Sociales de la IA</h2>
+  <div class="card purple">
+    <h3 class="subtitle">🎯 ¿Qué es la ética en la IA?</h3>
+    <p>La <strong>ética de la Inteligencia Artificial</strong> es el campo que estudia los principios morales, los valores y las normas que deben regir el diseño, desarrollo, despliegue y uso de los sistemas de IA. No se trata solo de cumplir leyes, sino de preguntarnos: <em>¿qué es correcto? ¿qué es justo? ¿qué daña a quién?</em></p>
+  </div>
+  <div class="topic-grid">
+    <div class="topic-card">
+      <div class="icon">🏛️</div>
+      <h4>Aristóteles — Ética Nicomáquea</h4>
+      <p>El bien supremo es la <strong>eudaimonia</strong> (felicidad), alcanzada mediante la virtud y el justo medio. La virtud moral se adquiere por hábito y la razón debe guiar la acción.</p>
+    </div>
+    <div class="topic-card p2">
+      <div class="icon">🌍</div>
+      <h4>UNESCO — Recomendación 2021</h4>
+      <p>Principios globales: derechos humanos, dignidad, transparencia, rendición de cuentas, supervisión humana, sostenibilidad y no discriminación.</p>
+    </div>
+    <div class="topic-card p3">
+      <div class="icon">⚠️</div>
+      <h4>Riesgos sociales</h4>
+      <p>Sesgo algorítmico, desinformación, deepfakes, vigilancia masiva, pérdida de empleo y concentración del poder tecnológico.</p>
+    </div>
+    <div class="topic-card p4">
+      <div class="icon">🏛️</div>
+      <h4>Riesgos de gobierno</h4>
+      <p>Falta de regulación, opacidad de los modelos, dependencia tecnológica y ausencia de mecanismos de rendición de cuentas.</p>
+    </div>
+    <div class="topic-card p5">
+      <div class="icon">🧑‍💻</div>
+      <h4>Riesgos como ciudadanos</h4>
+      <p>Pérdida de privacidad, manipulación informativa, adicción digital y erosión de la capacidad crítica.</p>
+    </div>
+    <div class="topic-card">
+      <div class="icon">✅</div>
+      <h4>Uso responsable</h4>
+      <p>Verificar la información, declarar el uso de IA, proteger datos personales, evitar el plagio y promover la equidad algorítmica.</p>
+    </div>
+  </div>
+  <div style="margin-top:20px">
+    <button class="btn btn-primary" onclick="goToSlide(2)">Siguiente: Reglas del Juego ▶</button>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: REGLAS ============ -->
+<section class="slide" id="slide-2">
+  <h2 class="title">📜 Reglas del Juego</h2>
+  <div class="card">
+    <h3 class="subtitle">👥 Organización</h3>
+    <ul>
+      <li>5 equipos de 4 integrantes cada uno.</li>
+      <li>Cada equipo acumula puntos en tiempo real.</li>
+      <li>Equipo que no asista o no participe: <strong>null</strong> (sin aportes).</li>
+    </ul>
+  </div>
+  <div class="card purple">
+    <h3 class="subtitle">🏆 Estructura — 120 puntos totales</h3>
+    <ul>
+      <li><strong>Sección 1:</strong> 10 preguntas sobre Aristóteles (40 pts).</li>
+      <li><strong>Sección 2:</strong> 5 rondas de debate ético (40 pts).</li>
+      <li><strong>Sección 3:</strong> 7 preguntas complejas sobre IA (40 pts).</li>
+    </ul>
+  </div>
+  <div class="card pink">
+    <h3 class="subtitle">⏱️ Dinámica</h3>
+    <ul>
+      <li>Cada pregunta tiene <strong>1 minuto</strong> de temporizador automático.</li>
+      <li>Las respuestas se escriben en el pizarrón.</li>
+      <li>Al terminar el tiempo, se revela la solución y se asignan puntos.</li>
+      <li>Sonidos de conteo y fin de tiempo.</li>
+    </ul>
+  </div>
+  <button class="btn btn-primary" onclick="startSection(1)">▶ Iniciar Sección 1</button>
+</section>
+
+<!-- ============ SLIDES SECCIÓN 1 (generadas por JS) ============ -->
+<!-- Se insertan dinámicamente -->
+
+<!-- ============ SLIDE RESULTADOS S1 ============ -->
+<section class="slide" id="slide-s1-results">
+  <h2 class="title">📊 Resultados — Sección 1: Aristóteles</h2>
+  <div id="s1ResultsTable"></div>
+  <button class="btn btn-purple" onclick="startSection(2)">▶ Iniciar Sección 2: Debate</button>
+</section>
+
+<!-- ============ SLIDES SECCIÓN 2 (generadas por JS) ============ -->
+<!-- Se insertan dinámicamente -->
+
+<!-- ============ SLIDE RESULTADOS S2 ============ -->
+<section class="slide" id="slide-s2-results">
+  <h2 class="title">📊 Resultados — Sección 2: Debate</h2>
+  <div id="s2ResultsTable"></div>
+  <button class="btn btn-pink" onclick="startSection(3)">▶ Iniciar Sección 3: Preguntas Complejas</button>
+</section>
+
+<!-- ============ SLIDES SECCIÓN 3 (generadas por JS) ============ -->
+<!-- Se insertan dinámicamente -->
+
+<!-- ============ SLIDE FINAL ============ -->
+<section class="slide" id="slide-final">
+  <h2 class="title">🏆 Tabla Final de Puntos</h2>
+  <div id="finalTable"></div>
+  <div class="card green" style="margin-top:15px">
+    <h3 class="subtitle">🎓 Reflexión Final</h3>
+    <p>La ética en la IA no es un obstáculo técnico, sino una brújula. Aristóteles nos enseñó que la virtud se cultiva con hábito; la UNESCO nos recuerda que los derechos humanos son el límite infranqueable; y como ingenieros en TI, tenemos la responsabilidad de construir tecnología que sirva a las personas, no que las dañe.</p>
+    <p style="margin-top:10px"><strong>"La IA puede multiplicar tu capacidad, pero multiplicar algo sin dirección no construye un futuro justo."</strong></p>
+  </div>
+  <button class="btn btn-dark" onclick="resetGame()">🔄 Reiniciar Actividad</button>
+</section>
+
+</div><!-- /deck -->
+
+<!-- ============ NAV BAR ============ -->
+<div class="nav-bar hidden" id="navBar">
+  <span class="slide-indicator" id="slideIndicator">Diapositiva 1</span>
+  <div class="nav-btns">
+    <button class="btn btn-dark btn-sm" onclick="prevSlide()">◀ Anterior</button>
+    <button class="btn btn-primary btn-sm" onclick="nextSlide()">Siguiente ▶</button>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   ESTADO GLOBAL
+   ============================================================ */
+const TEAM_COLORS = ['#e74c3c','#3498db','#27ae60','#f39c12','#9b59b6'];
+const TEAM_NAMES = ['Equipo 1','Equipo 2','Equipo 3','Equipo 4','Equipo 5'];
+const TEAM_EMOJIS = ['🔴','🔵','🟢','🟠','🟣'];
+
+const state = {
+  currentSlide: 0,
+  teams: TEAM_NAMES.map((n,i)=>({name:n, color:TEAM_COLORS[i], emoji:TEAM_EMOJIS[i], s1:0, s2:0, s3:0})),
+  totalSlides: 0,
+  timerInterval: null,
+  timerSeconds: 0,
+  s1Questions: [],
+  s2Rounds: [],
+  s3Questions: [],
+  s1Current: 0,
+  s2Current: 0,
+  s3Current: 0
+};
+
+/* ============================================================
+   DATOS: PREGUNTAS
+   ============================================================ */
+state.s1Questions = [
+  {q:"¿Cuál es el bien supremo según Aristóteles y por qué se busca por sí mismo y no por otra cosa?",
+   a:"El bien supremo es la <strong>eudaimonia</strong> (felicidad). Se busca por sí misma porque es un fin perfecto y autosuficiente; todas las demás cosas (riqueza, honor, placer) se buscan en función de ella."},
+  {q:"¿Qué significa el término griego 'eudaimonia' y por qué Aristóteles lo distingue del placer, la riqueza y el honor?",
+   a:"Eudaimonia significa 'tener un buen espíritu' o 'florecer humanamente'. Se distingue del placer porque este es pasajero; de la riqueza porque es un medio, no un fin; y del honor porque depende de otros."},
+  {q:"Según Aristóteles, ¿cuál es la función propia (ergon) del ser humano y cómo se relaciona con la virtud?",
+   a:"La función propia del ser humano es la <strong>actividad racional</strong>. La virtud (areté) consiste en realizar esa actividad de manera excelente, conforme a la razón."},
+  {q:"¿Por qué la felicidad, para Aristóteles, no puede ser un simple don de la fortuna sino una actividad del alma conforme a la virtud?",
+   a:"Porque la felicidad es algo que se <strong>practica</strong>, no algo que se recibe. Es una actividad continua del alma guiada por la razón y la virtud, no un estado pasivo."},
+  {q:"¿Cuál es la diferencia fundamental entre las virtudes intelectuales y las virtudes morales?",
+   a:"Las <strong>virtudes intelectuales</strong> (sabiduría, ciencia, arte) se adquieren por enseñanza; las <strong>virtudes morales</strong> (valentía, justicia, templanza) se adquieren por hábito y costumbre."},
+  {q:"¿Cómo se adquiere la virtud moral según Aristóteles y por qué no basta con conocerla teóricamente?",
+   a:"La virtud moral se adquiere por <strong>hábito</strong>: practicando actos virtuosos. No basta conocerla porque la ética no es solo teoría, sino acción; nos volvemos justos actuando justamente."},
+  {q:"¿Qué es el 'justo medio' (mesotés) y cómo se relaciona con la excelencia moral?",
+   a:"El justo medio es el punto equidistante entre dos extremos viciosos (exceso y defecto). La virtud consiste en elegir ese término medio según la razón práctica."},
+  {q:"¿Por qué Aristóteles afirma que el ser humano es por naturaleza un 'animal político' (zoon politikon)?",
+   a:"Porque el ser humano solo puede desarrollarse plenamente en comunidad. La <strong>polis</strong> es el espacio natural donde se ejercen la virtud, la justicia y la vida buena."},
+  {q:"¿Qué papel juega la razón (logos) en la vida virtuosa y en la toma de decisiones éticas?",
+   a:"La razón es la que <strong>guía</strong> la acción. Sin razón, las pasiones nos dominan. La virtud ética es un hábito racional: elegir el justo medio según el logos."},
+  {q:"¿Cómo se relaciona la virtud (areté) con la excelencia y con el fin último de la vida humana?",
+   a:"Areté significa <strong>excelencia</strong>. La vida humana alcanza su fin (eudaimonia) cuando se ejercen las virtudes de forma excelente y continua a lo largo de la vida."}
+];
+
+state.s2Rounds = [
+  {teams:[0,1,2], q:"¿Es ético que las empresas usen IA para vigilar a sus empleados?",
+   sol:"No es ético cuando la vigilancia es desproporcionada, no informada o vulnera la dignidad. La UNESCO exige proporcionalidad, transparencia y supervisión humana. La confianza es más valiosa que el control."},
+  {teams:[1,2,3], q:"¿Debe regularse la IA generativa por ley o bastan los códigos éticos voluntarios?",
+   sol:"Ambos son necesarios. Los códigos éticos orientan, pero la ley protege derechos. La UNESCO recomienda marcos regulatorios con rendición de cuentas y sanciones efectivas."},
+  {teams:[2,3,4], q:"¿Es aceptable usar IA para tomar decisiones médicas sin supervisión humana?",
+   sol:"No. La supervisión humana es un principio irrenunciable. La IA puede asistir, pero la decisión final debe recaer en un profesional responsable y ético."},
+  {teams:[3,4,0], q:"¿Debería prohibirse el reconocimiento facial en espacios públicos?",
+   sol:"Debe regularse estrictamente. Puede usarse con fines de seguridad bajo control judicial, pero no para vigilancia masiva indiscriminada. El riesgo a la privacidad es enorme."},
+  {teams:[4,0,1], q:"¿Tienen las empresas tecnológicas la responsabilidad moral de los daños causados por sus algoritmos?",
+   sol:"Sí. La rendición de cuentas (accountability) exige que quienes diseñan, despliegan y lucran con la IA asuman responsabilidad por sus impactos, incluso si no los previeron."}
+];
+
+state.s3Questions = [
+  {q:"Según la UNESCO, ¿cuál es el principio que exige que los sistemas de IA respeten, protejan y promuevan los derechos humanos y las libertades fundamentales?",
+   opts:["Transparencia","Proporcionalidad","Derechos humanos y dignidad","Supervisión humana","Sostenibilidad"], correct:2},
+  {q:"¿Qué principio respalda la recomendación de que la IA sea auditable y trazable?",
+   opts:["Equidad","Sostenibilidad","Transparencia y explicabilidad","Privacidad","Colaboración"], correct:2},
+  {q:"¿Cuál de los siguientes se considera un riesgo de gobernanza asociado a la IA?",
+   opts:["Pérdida de empleo","Sesgo algorítmico","Concentración del poder tecnológico en pocas empresas y países","Adicción a pantallas","Contaminación"], correct:2},
+  {q:"Como ciudadano digital, ¿qué acción refleja un uso ético de la IA?",
+   opts:["Usar IA para crear deepfakes de políticos","Verificar la información generada por IA antes de compartirla","Publicar respuestas de IA como propias","Usar IA para plagiar tareas","Ignorar los sesgos de los modelos"], correct:1},
+  {q:"Según la UNESCO, ¿qué principio exige que la responsabilidad por el daño causado por un sistema de IA pueda atribuirse a personas o entidades?",
+   opts:["Privacidad","Rendición de cuentas (accountability)","Beneficencia","Autonomía","Justicia"], correct:1},
+  {q:"Un ingeniero en TI descubre que el sistema de IA que desarrolló discrimina a cierto grupo. Según la ética profesional y la UNESCO, ¿cuál debe ser su primera acción?",
+   opts:["Ignorar el problema","Documentar y reportar el sesgo a su superior o auditoría","Eliminar los datos","Cambiar de trabajo","Publicar en redes sociales"], correct:1},
+  {q:"¿Qué significa 'supervisión humana' en el contexto de la ética de la IA?",
+   opts:["Que los humanos controlan todos los datos","Que las decisiones críticas de la IA deben tener intervención y revisión humana","Que la IA reemplaza a los humanos","Que los humanos no deben usar IA","Que la IA supervisa a los humanos"], correct:1}
+];
+
+/* ============================================================
+   SONIDOS (Web Audio API)
+   ============================================================ */
+let audioCtx = null;
+function initAudio(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }
+function playSound(type){
+  try{
+    initAudio();
+    const now = audioCtx.currentTime;
+    if(type==='tick'){
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value=900; o.type='sine';
+      g.gain.setValueAtTime(.08,now);
+      g.gain.exponentialRampToValueAtTime(.001,now+.05);
+      o.start(now); o.stop(now+.05);
+    } else if(type==='end'){
+      [600,450,300].forEach((f,i)=>{
+        const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.value=f; o.type='square';
+        g.gain.setValueAtTime(.12,now+i*.15);
+        g.gain.exponentialRampToValueAtTime(.001,now+i*.15+.14);
+        o.start(now+i*.15); o.stop(now+i*.15+.15);
+      });
+    } else if(type==='correct'){
+      [800,1000,1300].forEach((f,i)=>{
+        const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+        o.connect(g); g.connect(audioCtx.destination);
+        o.frequency.value=f; o.type='sine';
+        g.gain.setValueAtTime(.1,now+i*.1);
+        g.gain.exponentialRampToValueAtTime(.001,now+i*.1+.15);
+        o.start(now+i*.1); o.stop(now+i*.1+.15);
+      });
+    } else if(type==='point'){
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value=1200; o.type='triangle';
+      g.gain.setValueAtTime(.15,now);
+      g.gain.exponentialRampToValueAtTime(.001,now+.3);
+      o.start(now); o.stop(now+.3);
+    } else if(type==='click'){
+      const o=audioCtx.createOscillator(), g=audioCtx.createGain();
+      o.connect(g); g.connect(audioCtx.destination);
+      o.frequency.value=500; o.type='sine';
+      g.gain.setValueAtTime(.05,now);
+      g.gain.exponentialRampToValueAtTime(.001,now+.03);
+      o.start(now); o.stop(now+.03);
+    }
+  }catch(e){}
+}
+
+/* ============================================================
+   NAVEGACIÓN
+   ============================================================ */
+function getAllSlides(){ return document.querySelectorAll('.slide'); }
+function goToSlide(n){
+  const slides = getAllSlides();
+  if(n<0||n>=slides.length) return;
+  slides.forEach(s=>s.classList.remove('active'));
+  slides[n].classList.add('active');
+  state.currentSlide = n;
+  document.getElementById('slideIndicator').textContent = `Diapositiva ${n+1} de ${slides.length}`;
+  const nav = document.getElementById('navBar');
+  const sb = document.getElementById('scoreboard');
+  if(n===0){ nav.classList.add('hidden'); sb.classList.add('hidden'); }
+  else { nav.classList.remove('hidden'); sb.classList.remove('hidden'); }
+  playSound('click');
+}
+function nextSlide(){ goToSlide(state.currentSlide+1); }
+function prevSlide(){ goToSlide(state.currentSlide-1); }
+
+/* ============================================================
+   SCOREBOARD
+   ============================================================ */
+function updateScoreboard(){
+  state.teams.forEach((t,i)=>{
+    document.getElementById('pts'+i).textContent = t.s1+t.s2+t.s3;
+  });
+}
+function animateTeam(i){
+  const el = document.getElementById('ts'+i);
+  el.classList.remove('updated');
+  void el.offsetWidth;
+  el.classList.add('updated');
+}
+
+/* ============================================================
+   TEMPORIZADOR
+   ============================================================ */
+function startTimer(seconds, displayEl, onEnd){
+  stopTimer();
+  state.timerSeconds = seconds;
+  displayEl.classList.remove('warning','danger','finished');
+  displayEl.textContent = formatTime(seconds);
+  state.timerInterval = setInterval(()=>{
+    state.timerSeconds--;
+    displayEl.textContent = formatTime(state.timerSeconds);
+    if(state.timerSeconds<=10 && state.timerSeconds>5){
+      displayEl.classList.add('warning');
+      playSound('tick');
+    } else if(state.timerSeconds<=5 && state.timerSeconds>0){
+      displayEl.classList.add('danger');
+      playSound('tick');
+    }
+    if(state.timerSeconds<=0){
+      stopTimer();
+      displayEl.classList.add('finished');
+      displayEl.textContent = '¡TIEMPO!';
+      playSound('end');
+      if(onEnd) onEnd();
+    }
+  },1000);
+}
+function stopTimer(){ if(state.timerInterval){ clearInterval(state.timerInterval); state.timerInterval=null; } }
+function formatTime(s){ const m=Math.floor(s/60); const sec=s%60; return `${m}:${sec.toString().padStart(2,'0')}`; }
+
+/* ============================================================
+   SECCIÓN 1: ARISTÓTELES
+   ============================================================ */
+function buildSection1(){
+  const deck = document.getElementById('deck');
+  const resultsSlide = document.getElementById('slide-s1-results');
+  state.s1Questions.forEach((q,idx)=>{
+    const slide = document.createElement('section');
+    slide.className='slide';
+    slide.id='slide-s1-q'+(idx+1);
+    slide.innerHTML = `
+      <div class="question-num">SECCIÓN 1 · PREGUNTA ${idx+1} DE 10</div>
+      <div class="card">
+        <p class="question-text">📜 ${q.q}</p>
+        <div class="timer-box">
+          <div class="timer" id="s1timer${idx}">1:00</div>
+          <div class="timer-label">Escriban su respuesta en el pizarrón</div>
+        </div>
+        <div style="text-align:center;margin:15px 0">
+          <button class="btn btn-primary" id="s1start${idx}" onclick="startS1Timer(${idx})">▶ Iniciar Tiempo</button>
+          <button class="btn btn-green" id="s1reveal${idx}" onclick="revealS1(${idx})" disabled>🔓 Revelar Solución</button>
+        </div>
+        <div id="s1sol${idx}" style="display:none">
+          <div class="solution-box">
+            <h4>✅ Solución</h4>
+            <p>${q.a}</p>
+          </div>
+          <h3 class="subtitle" style="text-align:center">Asignar puntos (4 pts por equipo correcto)</h3>
+          <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px" id="s1award${idx}">
+            ${state.teams.map((t,i)=>`<button class="btn btn-sm" style="background:${t.color}" onclick="awardS1(${i},4,${idx})">${t.emoji} ${t.name} +4</button>`).join('')}
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-dark" onclick="nextS1()">Siguiente Pregunta ▶</button>
+    `;
+    deck.insertBefore(slide, resultsSlide);
+  });
+}
+
+function startSection(n){
+  if(n===1){ buildSection1IfNeeded(); goToSlide(document.getElementById('slide-s1-q1').getAttribute('data-idx')||findSlideIndex('slide-s1-q1')); }
+  else if(n===2){ buildSection2IfNeeded(); goToSlide(findSlideIndex('slide-s2-intro')); }
+  else if(n===3){ buildSection3IfNeeded(); goToSlide(findSlideIndex('slide-s3-intro')); }
+}
+function findSlideIndex(id){
+  const slides = getAllSlides();
+  for(let i=0;i<slides.length;i++){ if(slides[i].id===id) return i; }
+  return 0;
+}
+let s1Built=false;
+function buildSection1IfNeeded(){ if(s1Built) return; s1Built=true; buildSection1(); }
+
+function startS1Timer(idx){
+  const display = document.getElementById('s1timer'+idx);
+  document.getElementById('s1start'+idx).disabled=true;
+  startTimer(60, display, ()=>{
+    document.getElementById('s1reveal'+idx).disabled=false;
+  });
+}
+function revealS1(idx){
+  stopTimer();
+  document.getElementById('s1sol'+idx).style.display='block';
+  playSound('correct');
+}
+function awardS1(teamIdx, pts, qIdx){
+  state.teams[teamIdx].s1 += pts;
+  updateScoreboard();
+  animateTeam(teamIdx);
+  playSound('point');
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '✓ ' + btn.textContent;
+}
+function nextS1(){
+  stopTimer();
+  const nextIdx = state.s1Current+1;
+  if(nextIdx < state.s1Questions.length){
+    state.s1Current = nextIdx;
+    goToSlide(findSlideIndex('slide-s1-q'+(nextIdx+1)));
+  } else {
+    showS1Results();
+  }
+}
+function showS1Results(){
+  let html = `<table class="score-table"><thead><tr><th>Equipo</th><th>Puntos Sección 1</th></tr></thead><tbody>`;
+  state.teams.forEach(t=>{
+    html += `<tr><td>${t.emoji} ${t.name}</td><td><strong>${t.s1}</strong> pts</td></tr>`;
+  });
+  html += `</tbody></table>`;
+  document.getElementById('s1ResultsTable').innerHTML = html;
+  goToSlide(findSlideIndex('slide-s1-results'));
+}
+
+/* ============================================================
+   SECCIÓN 2: DEBATE
+   ============================================================ */
+function buildSection2(){
+  const deck = document.getElementById('deck');
+  const resultsSlide = document.getElementById('slide-s2-results');
+
+  // Intro debate
+  const intro = document.createElement('section');
+  intro.className='slide'; intro.id='slide-s2-intro';
+  intro.innerHTML = `
+    <h2 class="title">⚖️ Sección 2: Debate Ético</h2>
+    <div class="card purple">
+      <h3 class="subtitle">📋 Estructura del Debate</h3>
+      <ul>
+        <li><strong>5 rondas</strong>, con <strong>3 equipos</strong> por ronda.</li>
+        <li>Cada equipo participa en <strong>3 rondas</strong> (equidad total).</li>
+        <li>Fases: <strong>Apertura</strong> → <strong>Réplica</strong> → <strong>Contrarréplica</strong>.</li>
+        <li>Tiempo: <strong>1 minuto por equipo</strong> en cada fase.</li>
+        <li>Al final se revela la solución y se asignan puntos: <strong>8, 5 y 3</strong>.</li>
+      </ul>
+    </div>
+    <div class="card pink">
+      <h3 class="subtitle">🔄 Rotación de Equipos</h3>
+      <table class="score-table">
+        <thead><tr><th>Ronda</th><th>Equipos Participantes</th></tr></thead>
+        <tbody>
+          <tr><td>Ronda 1</td><td>🔴 Equipo 1 · 🔵 Equipo 2 · 🟢 Equipo 3</td></tr>
+          <tr><td>Ronda 2</td><td>🔵 Equipo 2 · 🟢 Equipo 3 · 🟠 Equipo 4</td></tr>
+          <tr><td>Ronda 3</td><td>🟢 Equipo 3 · 🟠 Equipo 4 · 🟣 Equipo 5</td></tr>
+          <tr><td>Ronda 4</td><td>🟠 Equipo 4 · 🟣 Equipo 5 · 🔴 Equipo 1</td></tr>
+          <tr><td>Ronda 5</td><td>🟣 Equipo 5 · 🔴 Equipo 1 · 🔵 Equipo 2</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button class="btn btn-purple" onclick="goToSlide(findSlideIndex('slide-s2-r1'))">▶ Iniciar Ronda 1</button>
+  `;
+  deck.insertBefore(intro, resultsSlide);
+
+  // Rondas
+  state.s2Rounds.forEach((r,idx)=>{
+    const slide = document.createElement('section');
+    slide.className='slide'; slide.id='slide-s2-r'+(idx+1);
+    slide.innerHTML = `
+      <div class="question-num">SECCIÓN 2 · RONDA ${idx+1} DE 5</div>
+      <div class="card">
+        <p class="question-text">💬 ${r.q}</p>
+        <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:10px 0">
+          ${r.teams.map(ti=>`<span class="team-score" style="background:${state.teams[ti].color}">${state.teams[ti].emoji} ${state.teams[ti].name}</span>`).join('')}
+        </div>
+      </div>
+
+      <!-- FASE APERTURA -->
+      <div class="debate-phase" id="s2r${idx}-fase-apertura">
+        <div class="phase-badge phase-apertura">🎤 Fase: Apertura</div>
+        <div class="timer" id="s2r${idx}-timer">1:00</div>
+        <div class="timer-label" id="s2r${idx}-label">Equipo ${state.teams[r.teams[0]].name} — prepárense</div>
+        <div style="margin-top:10px">
+          <button class="btn btn-primary btn-sm" onclick="startDebateTurn(${idx},'apertura',0)">▶ Turno Eq. ${r.teams[0]+1}</button>
+          <button class="btn btn-primary btn-sm" onclick="startDebateTurn(${idx},'apertura',1)">▶ Turno Eq. ${r.teams[1]+1}</button>
+          <button class="btn btn-primary btn-sm" onclick="startDebateTurn(${idx},'apertura',2)">▶ Turno Eq. ${r.teams[2]+1}</button>
+        </div>
+      </div>
+
+      <!-- FASE RÉPLICA -->
+      <div class="debate-phase" id="s2r${idx}-fase-replica">
+        <div class="phase-badge phase-replica">🔄 Fase: Réplica</div>
+        <div style="margin-top:5px">
+          <button class="btn btn-pink btn-sm" onclick="startDebateTurn(${idx},'replica',0)">▶ Réplica Eq. ${r.teams[0]+1}</button>
+          <button class="btn btn-pink btn-sm" onclick="startDebateTurn(${idx},'replica',1)">▶ Réplica Eq. ${r.teams[1]+1}</button>
+          <button class="btn btn-pink btn-sm" onclick="startDebateTurn(${idx},'replica',2)">▶ Réplica Eq. ${r.teams[2]+1}</button>
+        </div>
+      </div>
+
+      <!-- FASE CONTRARRÉPLICA -->
+      <div class="debate-phase" id="s2r${idx}-fase-contra">
+        <div class="phase-badge phase-contra">⚡ Fase: Contrarréplica</div>
+        <div style="margin-top:5px">
+          <button class="btn btn-orange btn-sm" onclick="startDebateTurn(${idx},'contra',0)">▶ Contra Eq. ${r.teams[0]+1}</button>
+          <button class="btn btn-orange btn-sm" onclick="startDebateTurn(${idx},'contra',1)">▶ Contra Eq. ${r.teams[1]+1}</button>
+          <button class="btn btn-orange btn-sm" onclick="startDebateTurn(${idx},'contra',2)">▶ Contra Eq. ${r.teams[2]+1}</button>
+        </div>
+      </div>
+
+      <button class="btn btn-green" onclick="revealS2(${idx})">🔓 Revelar Solución y Asignar Puntos</button>
+
+      <div id="s2r${idx}-solution" style="display:none;width:100%;max-width:900px">
+        <div class="solution-box">
+          <h4>✅ Solución General</h4>
+          <p>${r.sol}</p>
+        </div>
+        <h3 class="subtitle" style="text-align:center">Asignar puntos: 8 (mejor), 5 (segundo), 3 (tercero)</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:500px;margin:0 auto">
+          ${r.teams.map((ti,pos)=>`
+            <div class="team-selector">
+              <label style="color:${state.teams[ti].color}">${state.teams[ti].emoji} ${state.teams[ti].name}</label>
+              <select id="s2r${idx}-pts-${ti}">
+                <option value="0">0 pts</option>
+                <option value="3">3 pts (tercero)</option>
+                <option value="5">5 pts (segundo)</option>
+                <option value="8">8 pts (mejor)</option>
+              </select>
+            </div>
+          `).join('')}
+        </div>
+        <div style="text-align:center;margin-top:15px">
+          <button class="btn btn-green" onclick="applyS2Points(${idx})">✔ Aplicar Puntos</button>
+        </div>
+      </div>
+      <button class="btn btn-dark" style="margin-top:15px" onclick="nextS2(${idx})">Siguiente Ronda ▶</button>
+    `;
+    deck.insertBefore(slide, resultsSlide);
+  });
+}
+
+let s2Built=false;
+function buildSection2IfNeeded(){ if(s2Built) return; s2Built=true; buildSection2(); }
+
+function startDebateTurn(roundIdx, phase, teamPos){
+  const r = state.s2Rounds[roundIdx];
+  const teamIdx = r.teams[teamPos];
+  const timerEl = document.getElementById('s2r'+roundIdx+'-timer');
+  const labelEl = document.getElementById('s2r'+roundIdx+'-label');
+  const phaseName = phase==='apertura'?'Apertura':phase==='replica'?'Réplica':'Contrarréplica';
+  labelEl.textContent = `${state.teams[teamIdx].emoji} ${state.teams[teamIdx].name} — ${phaseName}`;
+  startTimer(60, timerEl, ()=>{});
+}
+function revealS2(idx){
+  stopTimer();
+  document.getElementById('s2r'+idx+'-solution').style.display='block';
+  playSound('correct');
+}
+function applyS2Points(idx){
+  const r = state.s2Rounds[idx];
+  r.teams.forEach(ti=>{
+    const sel = document.getElementById('s2r'+idx+'-pts-'+ti);
+    const pts = parseInt(sel.value)||0;
+    state.teams[ti].s2 += pts;
+    if(pts>0){ animateTeam(ti); }
+  });
+  updateScoreboard();
+  playSound('point');
+  event.target.disabled=true;
+  event.target.textContent='✓ Puntos Aplicados';
+}
+function nextS2(idx){
+  stopTimer();
+  if(idx+1 < state.s2Rounds.length){
+    goToSlide(findSlideIndex('slide-s2-r'+(idx+2)));
+  } else {
+    showS2Results();
+  }
+}
+function showS2Results(){
+  let html = `<table class="score-table"><thead><tr><th>Equipo</th><th>Puntos Sección 2</th></tr></thead><tbody>`;
+  state.teams.forEach(t=>{
+    html += `<tr><td>${t.emoji} ${t.name}</td><td><strong>${t.s2}</strong> pts</td></tr>`;
+  });
+  html += `</tbody></table>`;
+  document.getElementById('s2ResultsTable').innerHTML = html;
+  goToSlide(findSlideIndex('slide-s2-results'));
+}
+
+/* ============================================================
+   SECCIÓN 3: PREGUNTAS COMPLEJAS
+   ============================================================ */
+function buildSection3(){
+  const deck = document.getElementById('deck');
+  const finalSlide = document.getElementById('slide-final');
+
+  const intro = document.createElement('section');
+  intro.className='slide'; intro.id='slide-s3-intro';
+  intro.innerHTML = `
+    <h2 class="title">🧠 Sección 3: Preguntas Complejas sobre Ética de la IA</h2>
+    <div class="card">
+      <h3 class="subtitle">📋 Instrucciones</h3>
+      <ul>
+        <li>7 preguntas de opción múltiple (5 opciones cada una).</li>
+        <li>Cada equipo selecciona su respuesta.</li>
+        <li>Al final se revela la respuesta correcta.</li>
+        <li>Cada respuesta correcta vale <strong>8 puntos</strong>.</li>
+        <li>Pueden usar conocimientos de UNESCO, el video y la carrera de TI.</li>
+      </ul>
+    </div>
+    <button class="btn btn-pink" onclick="goToSlide(findSlideIndex('slide-s3-q1'))">▶ Iniciar Pregunta 1</button>
+  `;
+  deck.insertBefore(intro, finalSlide);
+
+  state.s3Questions.forEach((q,idx)=>{
+    const slide = document.createElement('section');
+    slide.className='slide'; slide.id='slide-s3-q'+(idx+1);
+    slide.innerHTML = `
+      <div class="question-num">SECCIÓN 3 · PREGUNTA ${idx+1} DE ${state.s3Questions.length}</div>
+      <div class="card">
+        <p class="question-text">🌐 ${q.q}</p>
+        <div class="options-grid" id="s3q${idx}-opts">
+          ${q.opts.map((o,oi)=>`<button class="option-btn" id="s3q${idx}-opt${oi}" onclick="selectS3Option(${idx},${oi})">${String.fromCharCode(65+oi)}. ${o}</button>`).join('')}
+        </div>
+      </div>
+      <div class="card purple">
+        <h3 class="subtitle">🧑‍🤝‍🧑 Selección por Equipo</h3>
+        <div id="s3q${idx}-team-selects">
+          ${state.teams.map((t,ti)=>`
+            <div class="team-selector" id="s3q${idx}-team${ti}">
+              <label style="color:${t.color}">${t.emoji} ${t.name}</label>
+              <select id="s3q${idx}-sel${ti}">
+                <option value="-1">— Seleccionar —</option>
+                ${q.opts.map((o,oi)=>`<option value="${oi}">${String.fromCharCode(65+oi)}. ${o.substring(0,40)}${o.length>40?'...':''}</option>`).join('')}
+              </select>
+            </div>
+          `).join('')}
+        </div>
+        <div style="text-align:center;margin-top:15px">
+          <button class="btn btn-green" id="s3q${idx}-reveal" onclick="revealS3(${idx})">🔓 Revelar Respuesta Correcta</button>
+        </div>
+      </div>
+      <div id="s3q${idx}-result" style="display:none;width:100%;max-width:900px">
+        <div class="solution-box">
+          <h4>✅ Respuesta Correcta: ${String.fromCharCode(65+q.correct)}</h4>
+          <p>${q.opts[q.correct]}</p>
+        </div>
+      </div>
+      <button class="btn btn-dark" onclick="nextS3(${idx})">Siguiente ▶</button>
+    `;
+    deck.insertBefore(slide, finalSlide);
+  });
+}
+
+let s3Built=false;
+function buildSection3IfNeeded(){ if(s3Built) return; s3Built=true; buildSection3(); }
+
+function selectS3Option(qIdx, oIdx){
+  // Solo para referencia visual del docente
+  const opts = document.querySelectorAll(`#s3q${qIdx}-opts .option-btn`);
+  opts.forEach(o=>o.classList.remove('selected'));
+  opts[oIdx].classList.add('selected');
+}
+function revealS3(qIdx){
+  const q = state.s3Questions[qIdx];
+  // Marcar opción correcta
+  document.getElementById(`s3q${qIdx}-opt${q.correct}`).classList.add('correct');
+  // Evaluar equipos
+  state.teams.forEach((t,ti)=>{
+    const sel = document.getElementById(`s3q${qIdx}-sel${ti}`);
+    const chosen = parseInt(sel.value);
+    const div = document.getElementById(`s3q${qIdx}-team${ti}`);
+    if(chosen === q.correct){
+      div.classList.add('correct');
+      state.teams[ti].s3 += 8;
+      animateTeam(ti);
+    } else if(chosen >= 0){
+      div.classList.add('incorrect');
+    }
+  });
+  updateScoreboard();
+  document.getElementById(`s3q${qIdx}-result`).style.display='block';
+  document.getElementById(`s3q${qIdx}-reveal`).disabled=true;
+  playSound('correct');
+}
+function nextS3(idx){
+  if(idx+1 < state.s3Questions.length){
+    goToSlide(findSlideIndex('slide-s3-q'+(idx+2)));
+  } else {
+    showFinalTable();
+  }
+}
+
+/* ============================================================
+   TABLA FINAL
+   ============================================================ */
+function showFinalTable(){
+  let html = `<table class="score-table">
+    <thead><tr>
+      <th>Equipo</th><th>Sección 1<br><small>Aristóteles</small></th>
+      <th>Sección 2<br><small>Debate</small></th>
+      <th>Sección 3<br><small>Preguntas</small></th>
+      <th>TOTAL</th>
+    </tr></thead><tbody>`;
+  state.teams.forEach(t=>{
+    const total = t.s1+t.s2+t.s3;
+    html += `<tr>
+      <td>${t.emoji} ${t.name}</td>
+      <td>${t.s1} / 40</td>
+      <td>${t.s2}</td>
+      <td>${t.s3} / 56</td>
+      <td><strong>${total}</strong></td>
+    </tr>`;
+  });
+  // Ganador
+  const totals = state.teams.map(t=>t.s1+t.s2+t.s3);
+  const max = Math.max(...totals);
+  const winnerIdx = totals.indexOf(max);
+  html += `</tbody></table>`;
+  html += `<div class="solution-box" style="margin-top:20px">
+    <h4>🥇 Equipo Ganador</h4>
+    <p style="font-size:1.6rem">${state.teams[winnerIdx].emoji} ${state.teams[winnerIdx].name} — ${max} puntos</p>
+  </div>`;
+  document.getElementById('finalTable').innerHTML = html;
+  goToSlide(findSlideIndex('slide-final'));
+  playSound('correct');
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetGame(){
+  state.teams.forEach(t=>{ t.s1=0; t.s2=0; t.s3=0; });
+  state.s1Current=0; state.s2Current=0; state.s3Current=0;
+  updateScoreboard();
+  // Reset botones de sección 1
+  state.s1Questions.forEach((q,i)=>{
+    const reveal = document.getElementById('s1reveal'+i);
+    if(reveal) reveal.disabled=true;
+    const sol = document.getElementById('s1sol'+i);
+    if(sol) sol.style.display='none';
+    const timer = document.getElementById('s1timer'+i);
+    if(timer){ timer.textContent='1:00'; timer.classList.remove('warning','danger','finished'); }
+    const start = document.getElementById('s1start'+i);
+    if(start) start.disabled=false;
+  });
+  // Reset selecciones sección 3
+  state.s3Questions.forEach((q,i)=>{
+    const reveals = document.getElementById('s3q'+i+'-reveal');
+    if(reveals) reveals.disabled=false;
+    const res = document.getElementById('s3q'+i+'-result');
+    if(res) res.style.display='none';
+    state.teams.forEach((t,ti)=>{
+      const sel = document.getElementById('s3q'+i+'-sel'+ti);
+      if(sel) sel.value='-1';
+      const div = document.getElementById('s3q'+i+'-team'+ti);
+      if(div) div.classList.remove('correct','incorrect');
+    });
+    document.querySelectorAll('#s3q'+i+'-opts .option-btn').forEach(o=>o.classList.remove('correct','selected'));
+  });
+  goToSlide(0);
+}
+
+/* ============================================================
+   FONDO FLOTANTE
+   ============================================================ */
+function createFloatingIcons(){
+  const bg = document.getElementById('floatingBg');
+  const icons = ['🧠','🤖','⚖️','💡','🔬','📊','🌐','⚙️','🧬','📡','💻','🔒','🌍','📚','⚡','🎯','🔍','🧩','📈','🛰️'];
+  for(let i=0;i<30;i++){
+    const span = document.createElement('span');
+    span.textContent = icons[Math.floor(Math.random()*icons.length)];
+    span.style.left = Math.random()*100+'%';
+    span.style.animationDuration = (15+Math.random()*20)+'s';
+    span.style.animationDelay = (Math.random()*15)+'s';
+    span.style.fontSize = (1.2+Math.random()*2)+'rem';
+    bg.appendChild(span);
+  }
+}
+
+/* ============================================================
+   INICIALIZACIÓN
+   ============================================================ */
+document.addEventListener('DOMContentLoaded', ()=>{
+  // Fecha actual
+  const today = new Date();
+  const months = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+  document.getElementById('currentDate').textContent = `${today.getDate()} de ${months[today.getMonth()]} de ${today.getFullYear()}`;
+
+  createFloatingIcons();
+  updateScoreboard();
+
+  // Navegación con teclado
+  document.addEventListener('keydown', e=>{
+    if(e.key==='ArrowRight') nextSlide();
+    if(e.key==='ArrowLeft') prevSlide();
+  });
+});
+</script>
+</body>
+</html>
